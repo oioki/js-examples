@@ -1,0 +1,28 @@
+{
+  "name": "remix-sentry-demo",
+  "private": true,
+  "sideEffects": false,
+  "type": "module",
+  "scripts": {
+    "dev": "remix vite:dev",
+    "build": "remix vite:build",
+    "start": "node --import ./instrument.server.mjs ./node_modules/@remix-run/serve/dist/cli.js ./build/server/index.js"
+  },
+  "dependencies": {
+    "@remix-run/node": "^2.8.0",
+    "@remix-run/react": "^2.8.0",
+    "@remix-run/serve": "^2.8.0",
+    "@sentry/remix": "10.11.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "isbot": "^4.1.0"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^2.8.0",
+    "@types/react": "^18.2.20",
+    "@types/react-dom": "^18.2.7",
+    "typescript": "^5.1.6",
+    "vite": "^5.1.0"
+  }
+}
+

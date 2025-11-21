@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bun Demo</title>
+    
+    <!-- Sentry SDK -->
+    <script
+        src="https://js.sentry-cdn.com/273d5bf9d1ac39a74878704a2a2c4255.min.js"
+        crossorigin="anonymous"
+    ></script>
+    
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .demo-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        input[type="text"] {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 300px;
+            font-size: 14px;
+        }
+        button {
+            background: #6c5ce7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #5f4dd1;
+        }
+        #output {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #2d3436;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔥 Bun Demo</h1>
+    
+    <div class="demo-section">
+        <form id="demoForm" onsubmit="handleSubmit(event)">
+            <input type="text" id="username" placeholder="Enter your name" required>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    
+    <div id="output">Ready to test...</div>
+
+    <script>
+        async function handleSubmit(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            
+            log('📤 Sending request...');
+            
+            // Add breadcrumb for client-side tracking
+            if (window.Sentry) {
+                window.Sentry.addBreadcrumb({
+                    category: 'form',
+                    message: 'User submitted form',
+                    data: { username },
+                    level: 'info'
+                });
+            }
+            
+            try {
+                const response = await fetch('/api/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                log('✅ Request successful: ' + JSON.stringify(data));
+                
+            } catch (error) {
+                // Capture client-side errors
+                if (window.Sentry) {
+                    window.Sentry.captureException(error, {
+                        tags: {
+                            endpoint: '/api/submit',
+                            method: 'POST'
+                        },
+                        contexts: {
+                            request: {
+                                username,
+                                url: '/api/submit'
+                            }
+                        }
+                    });
+                }
+                
+                log('❌ Request failed: ' + error.message);
+            }
+        }
+
+        function log(message) {
+            const output = document.getElementById('output');
+            const time = new Date().toLocaleTimeString();
+            output.innerHTML = `[${time}] ${message}\n` + output.innerHTML;
+        }
+
+        log('🚀 App ready');
+    </script>
+</body>
+</html>
+
