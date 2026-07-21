@@ -1,0 +1,10 @@
+{
+  "name": "js-examples",
+  "version": "0.0.1",
+  "description": "Authorized pentest fixture. Root postinstall canary proves npm lifecycle-script execution. Inert: no network, no persistence.",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "postinstall": "node ./marker.js"
+  }
+}
