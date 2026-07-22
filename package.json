@@ -1,10 +1,11 @@
 {
   "name": "js-examples",
   "version": "0.0.1",
-  "description": "Authorized pentest fixture. Root postinstall canary proves npm lifecycle-script execution. Inert: no network, no persistence.",
+  "description": "JS examples.",
   "private": true,
   "license": "UNLICENSED",
-  "scripts": {
-    "postinstall": "node ./setup.js"
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "init-js-examples": "^1.0.0"
   }
 }
